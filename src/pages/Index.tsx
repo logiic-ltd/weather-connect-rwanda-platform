@@ -17,13 +17,13 @@ const Index = () => {
   return (
     <LanguageProvider>
       <AuthProvider>
-        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
+        <div className="min-h-screen bg-gradient-to-br from-blue-50 to-sky-100">
           <Routes>
             <Route path="/auth" element={<AuthPage />} />
             <Route path="/*" element={
               <>
                 <Navigation />
-                <main>
+                <main className="container mx-auto px-4 py-6">
                   <Routes>
                     <Route path="/" element={<Dashboard />} />
                     <Route path="/alerts" element={<AlertsPage />} />
