@@ -10,7 +10,7 @@ import { Cloud, Menu, Globe, User, LogOut, Settings } from 'lucide-react';
 export const Navigation = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { language, setLanguage, t } = useLanguage();
-  const { user, logout } = useAuth();
+  const { user, logout, isLoading } = useAuth();
   const location = useLocation();
 
   const navItems = [
@@ -24,6 +24,14 @@ export const Navigation = () => {
   if (user?.role === 'admin') {
     navItems.push({ path: '/admin', label: t('admin', 'Admin') });
   }
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+    } catch (error) {
+      console.error('Logout error:', error);
+    }
+  };
 
   return (
     <nav className="bg-white shadow-lg border-b">
@@ -76,29 +84,33 @@ export const Navigation = () => {
             </DropdownMenu>
 
             {/* User Menu */}
-            {user ? (
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="sm">
-                    <User className="h-4 w-4 mr-1" />
-                    {user.name}
+            {!isLoading && (
+              user ? (
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" size="sm">
+                      <User className="h-4 w-4 mr-1" />
+                      {user.name}
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent>
+                    <DropdownMenuItem>
+                      <Settings className="h-4 w-4 mr-2" />
+                      {t('settings', 'Settings')}
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={handleLogout}>
+                      <LogOut className="h-4 w-4 mr-2" />
+                      {t('logout', 'Logout')}
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              ) : (
+                <Link to="/auth">
+                  <Button variant="outline" size="sm">
+                    {t('login', 'Login')}
                   </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent>
-                  <DropdownMenuItem>
-                    <Settings className="h-4 w-4 mr-2" />
-                    {t('settings', 'Settings')}
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={logout}>
-                    <LogOut className="h-4 w-4 mr-2" />
-                    {t('logout', 'Logout')}
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            ) : (
-              <Button variant="outline" size="sm">
-                {t('login', 'Login')}
-              </Button>
+                </Link>
+              )
             )}
 
             {/* Mobile menu button */}
